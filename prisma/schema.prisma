@@ -1,0 +1,209 @@
+// ============================================================
+// Football Field Reservation System — Prisma Schema (draft v1)
+// ============================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------
+// Enums
+// ---------------------------
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum BookingStatus {
+  PENDING     // waiting for admin approval
+  CONFIRMED   // approved / auto-confirmed / admin-created
+  REJECTED    // admin rejected the request
+  CANCELLED   // admin cancelled an already-confirmed booking
+}
+
+enum BookingSource {
+  ONLINE_DIRECT   // created by a trusted user, auto-confirmed
+  ONLINE_REQUEST  // created by a non-trusted user, needs approval
+  ADMIN_PHONE     // admin created it on behalf of a phone caller (registered or guest)
+}
+
+enum RecurrenceFrequency {
+  WEEKLY
+}
+
+// ---------------------------
+// User
+// ---------------------------
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  phone           String   @unique     // mandatory at registration
+  teamName        String?             // optional
+  role            UserRole @default(USER)
+  canBookDirectly Boolean  @default(false) // admin-controlled: true = auto-confirm, false = needs approval
+  isActive        Boolean  @default(true)  // admin can disable an account
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings          Booking[]            @relation("UserBookings")
+  recurringBookings RecurringBooking[]   @relation("UserRecurringBookings")
+  reviewedBookings  Booking[]            @relation("ReviewedByAdmin")
+
+  @@index([role])
+}
+
+// ---------------------------
+// Field (playground)
+// ---------------------------
+
+model Field {
+  id        String   @id @default(cuid())
+  name      String              // e.g. "Игрище 1", "Игрище 2"
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+
+  bookings          Booking[]
+  recurringBookings RecurringBooking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------
+// Booking (a single concrete 60-minute slot)
+// One row per field per date per hour — this is the source of truth
+// for availability checks, whether created standalone or generated
+// from a RecurringBooking.
+// ---------------------------
+
+model Booking {
+  id        String   @id @default(cuid())
+
+  fieldId   String
+  field     Field    @relation(fields: [fieldId], references: [id])
+
+  date      DateTime @db.Date     // calendar date of the match
+  startTime DateTime              // full timestamp, always on the hour
+  endTime   DateTime              // startTime + 60 min, stored for query convenience
+
+  status    BookingStatus @default(PENDING)
+  source    BookingSource
+
+  // Booker can be a registered user OR a guest (phone booking, no account)
+  userId      String?
+  user        User?   @relation("UserBookings", fields: [userId], references: [id])
+  guestName   String?
+  guestPhone  String?
+
+  // Optional team names entered at booking time
+  teamAName String?
+  teamBName String?
+
+  notes     String?              // free text, e.g. admin notes from the phone call
+
+  // Link back to the recurring series, if this booking was generated from one
+  recurringBookingId String?
+  recurringBooking    RecurringBooking? @relation(fields: [recurringBookingId], references: [id])
+  isRecurrenceOverride Boolean @default(false) // true if a single occurrence was edited/cancelled independently of the series
+
+  // Approval audit trail
+  reviewedByAdminId String?
+  reviewedByAdmin    User?   @relation("ReviewedByAdmin", fields: [reviewedByAdminId], references: [id])
+  reviewedAt         DateTime?
+  rejectionReason    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Prevents double-booking the same field/slot with an active (non-cancelled/rejected) booking.
+  // Enforced at the application layer (partial unique index recommended via raw SQL migration,
+  // since Prisma doesn't support partial unique constraints natively):
+  //   CREATE UNIQUE INDEX booking_field_slot_active_unique
+  //   ON "Booking" ("fieldId", "startTime")
+  //   WHERE status IN ('PENDING', 'CONFIRMED');
+  @@index([fieldId, date])
+  @@index([startTime])
+  @@index([userId])
+  @@index([status])
+}
+
+// ---------------------------
+// RecurringBooking (the "template" / series definition)
+// Generates Booking rows up to the global horizon via a scheduled job.
+// ---------------------------
+
+model RecurringBooking {
+  id        String   @id @default(cuid())
+
+  fieldId   String
+  field     Field    @relation(fields: [fieldId], references: [id])
+
+  userId    String?
+  user      User?    @relation("UserRecurringBookings", fields: [userId], references: [id])
+  guestName  String?
+  guestPhone String?
+
+  dayOfWeek Int                  // 0 = Sunday .. 6 = Saturday
+  startHour Int                  // 0-23, slot is always :00-:00, 60 minutes
+
+  teamAName String?
+  teamBName String?
+
+  frequency RecurrenceFrequency @default(WEEKLY)
+
+  startDate DateTime @db.Date    // first occurrence date
+  endDate   DateTime? @db.Date   // optional end of series; null = indefinite (bounded by horizon setting)
+
+  isActive  Boolean  @default(true) // admin can deactivate the whole series
+
+  generatedBookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fieldId, dayOfWeek])
+  @@index([isActive])
+}
+
+// ---------------------------
+// AppSettings (singleton row) — global configuration
+// ---------------------------
+
+model AppSettings {
+  id                    String   @id @default("singleton")
+  bookingHorizonDays     Int      @default(14)   // how far ahead slots can be seen/booked
+
+  // Default display window (can still book outside these hours on request)
+  weekdayDisplayStartHour Int @default(17)
+  weekdayDisplayEndHour   Int @default(22)
+  weekendDisplayStartHour Int @default(9)
+  weekendDisplayEndHour   Int @default(23)
+
+  conflictCheckDaysAhead Int @default(7) // how far ahead to flag recurring-booking conflicts
+
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------
+// Notification log (optional, for debugging/audit of emails sent)
+// ---------------------------
+
+model NotificationLog {
+  id        String   @id @default(cuid())
+  type      String              // e.g. "BOOKING_CONFIRMED", "BOOKING_PENDING", "RECURRENCE_CONFLICT"
+  recipient String              // email address
+  bookingId String?
+  payload   Json?
+  sentAt    DateTime @default(now())
+  success   Boolean  @default(true)
+  error     String?
+}

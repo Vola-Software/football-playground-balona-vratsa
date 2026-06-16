@@ -1,0 +1,15 @@
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "tsx prisma/seed.ts",
+  },
+  // DIRECT_URL is used by the Prisma CLI (migrations, introspection, studio).
+  // The runtime app uses DATABASE_URL (pooled) via PrismaPg adapter in lib/prisma.ts.
+  datasource: {
+    url: process.env.DIRECT_URL ?? "postgresql://placeholder:placeholder@localhost:5432/placeholder",
+  },
+});
