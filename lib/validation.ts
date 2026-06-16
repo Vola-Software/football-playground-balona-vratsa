@@ -70,6 +70,38 @@ export const rejectBookingSchema = z.object({
     .max(500, "Причината е твърде дълга"),
 });
 
+export const createRecurringSeriesSchema = z.object({
+  fieldId: z.string().min(1, "Изберете игрище"),
+  dayOfWeek: z.number().int().min(0).max(6),
+  startHour: z.number().int().min(0).max(23),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Невалидна начална дата"),
+  endDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Невалидна крайна дата")
+    .optional(),
+  teamAName: z.string().max(100, "Твърде дълго").optional(),
+  teamBName: z.string().max(100, "Твърде дълго").optional(),
+  targetUserId: z.string().optional(),
+  guestName: z.string().max(100).optional(),
+  guestPhone: z
+    .string()
+    .regex(/^\+?[0-9\s\-().]{7,20}$/, "Невалиден телефонен номер")
+    .optional(),
+});
+
+export const updateRecurringSeriesSchema = z.object({
+  isActive: z.boolean().optional(),
+  teamAName: z.string().max(100).nullable().optional(),
+  teamBName: z.string().max(100).nullable().optional(),
+});
+
+export const updateOccurrenceSchema = z.object({
+  action: z.enum(["cancel", "update"]),
+  teamAName: z.string().max(100).nullable().optional(),
+  teamBName: z.string().max(100).nullable().optional(),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type CreateBookingInput = z.infer<typeof createBookingSchema>;
+export type CreateRecurringSeriesInput = z.infer<typeof createRecurringSeriesSchema>;
