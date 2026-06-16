@@ -53,12 +53,18 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash("admin123", 12);
   const admin = await prisma.user.upsert({
     where: { email: "admin@balona-vratsa.bg" },
-    update: {},
+    update: {
+      firstName: "Администратор",
+      lastName: "Балона",
+    },
     create: {
       email: "admin@balona-vratsa.bg",
       passwordHash: adminPasswordHash,
       phone: "+359888000001",
-      teamName: "Администратор",
+      firstName: "Администратор",
+      lastName: "Балона",
+      username: "admin",
+      teamName: "Балона Враца",
       role: "ADMIN",
       canBookDirectly: true,
       isActive: true,

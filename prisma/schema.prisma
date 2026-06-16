@@ -46,6 +46,9 @@ model User {
   email           String   @unique
   passwordHash    String
   phone           String   @unique     // mandatory at registration
+  firstName       String?             // mandatory at registration, nullable for legacy rows
+  lastName        String?             // mandatory at registration, nullable for legacy rows
+  username        String?  @unique    // optional nickname
   teamName        String?             // optional
   role            UserRole @default(USER)
   canBookDirectly Boolean  @default(false) // admin-controlled: true = auto-confirm, false = needs approval

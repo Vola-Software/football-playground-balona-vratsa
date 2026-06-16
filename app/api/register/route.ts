@@ -19,11 +19,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email, password, phone, teamName } = parsed.data;
+  const { firstName, lastName, email, password, phone, username, teamName } = parsed.data;
+
+  const normalizedUsername = username || null;
 
   const existing = await prisma.user.findFirst({
-    where: { OR: [{ email }, { phone }] },
-    select: { email: true, phone: true },
+    where: {
+      OR: [
+        { email },
+        { phone },
+        ...(normalizedUsername ? [{ username: normalizedUsername }] : []),
+      ],
+    },
+    select: { email: true, phone: true, username: true },
   });
 
   if (existing) {
@@ -33,8 +41,14 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
+    if (existing.phone === phone) {
+      return NextResponse.json(
+        { error: "Телефонният номер вече е регистриран." },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
-      { error: "Телефонният номер вече е регистриран." },
+      { error: "Псевдонимът вече е зает." },
       { status: 409 }
     );
   }
@@ -43,9 +57,12 @@ export async function POST(req: NextRequest) {
 
   const user = await prisma.user.create({
     data: {
+      firstName,
+      lastName,
       email,
       passwordHash,
       phone,
+      username: normalizedUsername,
       teamName: teamName || null,
     },
     select: { id: true, email: true },

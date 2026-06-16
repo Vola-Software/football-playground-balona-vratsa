@@ -11,6 +11,9 @@ export default async function AdminUsersPage() {
       id: true,
       email: true,
       phone: true,
+      firstName: true,
+      lastName: true,
+      username: true,
       teamName: true,
       role: true,
       canBookDirectly: true,
@@ -50,7 +53,19 @@ export default async function AdminUsersPage() {
               {users.map((u) => (
                 <tr key={u.id} className={`${!u.isActive ? "opacity-50" : ""}`}>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-800">{u.email}</p>
+                    {(u.firstName || u.lastName) && (
+                      <p className="font-medium text-gray-800">
+                        {[u.firstName, u.lastName].filter(Boolean).join(" ")}
+                        {u.username && (
+                          <span className="ml-1.5 text-xs text-gray-400 font-normal">
+                            @{u.username}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                    <p className={`text-gray-${u.firstName ? "400" : "800"} ${u.firstName ? "text-xs" : "font-medium"}`}>
+                      {u.email}
+                    </p>
                   </td>
                   <td className="px-4 py-3 text-gray-600 font-mono text-xs">
                     {u.phone}

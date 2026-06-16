@@ -23,6 +23,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: true,
             email: true,
             passwordHash: true,
+            firstName: true,
+            lastName: true,
+            username: true,
             teamName: true,
             role: true,
             canBookDirectly: true,
@@ -38,10 +41,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
         if (!isValid) return null;
 
+        const displayName =
+          user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.username ?? user.email;
+
         return {
           id: user.id,
           email: user.email,
-          name: user.teamName ?? user.email,
+          name: displayName,
           role: user.role,
           canBookDirectly: user.canBookDirectly,
         };

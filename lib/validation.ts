@@ -9,6 +9,14 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, "Името е задължително")
+    .max(50, "Името е твърде дълго"),
+  lastName: z
+    .string()
+    .min(1, "Фамилията е задължителна")
+    .max(50, "Фамилията е твърде дълга"),
   email: z
     .string()
     .min(1, "Имейлът е задължителен")
@@ -25,6 +33,13 @@ export const registerSchema = z.object({
       /^\+?[0-9\s\-().]{7,20}$/,
       "Невалиден телефонен номер"
     ),
+  username: z
+    .string()
+    .min(3, "Псевдонимът трябва да е поне 3 символа")
+    .max(30, "Псевдонимът е твърде дълъг")
+    .regex(/^[\p{L}0-9_.-]+$/u, "Само букви (включително кирилица), цифри, _, ., -")
+    .optional()
+    .or(z.literal("")),
   teamName: z
     .string()
     .max(100, "Името на отбора е твърде дълго")
@@ -38,6 +53,14 @@ export const createBookingSchema = z.object({
   teamAName: z.string().max(100, "Твърде дълго").optional(),
   teamBName: z.string().max(100, "Твърде дълго").optional(),
   notes: z.string().max(500, "Бележката е твърде дълга").optional(),
+  // Admin-only: book on behalf of a registered user
+  targetUserId: z.string().optional(),
+  // Admin-only: guest booking (no account)
+  guestName: z.string().max(100).optional(),
+  guestPhone: z
+    .string()
+    .regex(/^\+?[0-9\s\-().]{7,20}$/, "Невалиден телефонен номер")
+    .optional(),
 });
 
 export const rejectBookingSchema = z.object({

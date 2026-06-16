@@ -29,6 +29,9 @@ export type UserMinAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   phone: string | null
+  firstName: string | null
+  lastName: string | null
+  username: string | null
   teamName: string | null
   role: $Enums.UserRole | null
   canBookDirectly: boolean | null
@@ -42,6 +45,9 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   passwordHash: string | null
   phone: string | null
+  firstName: string | null
+  lastName: string | null
+  username: string | null
   teamName: string | null
   role: $Enums.UserRole | null
   canBookDirectly: boolean | null
@@ -55,6 +61,9 @@ export type UserCountAggregateOutputType = {
   email: number
   passwordHash: number
   phone: number
+  firstName: number
+  lastName: number
+  username: number
   teamName: number
   role: number
   canBookDirectly: number
@@ -70,6 +79,9 @@ export type UserMinAggregateInputType = {
   email?: true
   passwordHash?: true
   phone?: true
+  firstName?: true
+  lastName?: true
+  username?: true
   teamName?: true
   role?: true
   canBookDirectly?: true
@@ -83,6 +95,9 @@ export type UserMaxAggregateInputType = {
   email?: true
   passwordHash?: true
   phone?: true
+  firstName?: true
+  lastName?: true
+  username?: true
   teamName?: true
   role?: true
   canBookDirectly?: true
@@ -96,6 +111,9 @@ export type UserCountAggregateInputType = {
   email?: true
   passwordHash?: true
   phone?: true
+  firstName?: true
+  lastName?: true
+  username?: true
   teamName?: true
   role?: true
   canBookDirectly?: true
@@ -182,6 +200,9 @@ export type UserGroupByOutputType = {
   email: string
   passwordHash: string
   phone: string
+  firstName: string | null
+  lastName: string | null
+  username: string | null
   teamName: string | null
   role: $Enums.UserRole
   canBookDirectly: boolean
@@ -216,6 +237,9 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   passwordHash?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
+  username?: Prisma.StringNullableFilter<"User"> | string | null
   teamName?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFilter<"User"> | boolean
@@ -232,6 +256,9 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   canBookDirectly?: Prisma.SortOrder
@@ -247,10 +274,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
   phone?: string
+  username?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   passwordHash?: Prisma.StringFilter<"User"> | string
+  firstName?: Prisma.StringNullableFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableFilter<"User"> | string | null
   teamName?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFilter<"User"> | boolean
@@ -260,13 +290,16 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bookings?: Prisma.BookingListRelationFilter
   recurringBookings?: Prisma.RecurringBookingListRelationFilter
   reviewedBookings?: Prisma.BookingListRelationFilter
-}, "id" | "email" | "phone">
+}, "id" | "email" | "phone" | "username">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   teamName?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   canBookDirectly?: Prisma.SortOrder
@@ -286,6 +319,9 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringWithAggregatesFilter<"User"> | string
+  firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  username?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   teamName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   canBookDirectly?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -299,6 +335,9 @@ export type UserCreateInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -315,6 +354,9 @@ export type UserUncheckedCreateInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -331,6 +373,9 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -347,6 +392,9 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -363,6 +411,9 @@ export type UserCreateManyInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -376,6 +427,9 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -389,6 +443,9 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -402,6 +459,9 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   canBookDirectly?: Prisma.SortOrder
@@ -415,6 +475,9 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   canBookDirectly?: Prisma.SortOrder
@@ -428,6 +491,9 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   teamName?: Prisma.SortOrder
   role?: Prisma.SortOrder
   canBookDirectly?: Prisma.SortOrder
@@ -514,6 +580,9 @@ export type UserCreateWithoutBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -529,6 +598,9 @@ export type UserUncheckedCreateWithoutBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -549,6 +621,9 @@ export type UserCreateWithoutReviewedBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -564,6 +639,9 @@ export type UserUncheckedCreateWithoutReviewedBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -595,6 +673,9 @@ export type UserUpdateWithoutBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -610,6 +691,9 @@ export type UserUncheckedUpdateWithoutBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -636,6 +720,9 @@ export type UserUpdateWithoutReviewedBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -651,6 +738,9 @@ export type UserUncheckedUpdateWithoutReviewedBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -666,6 +756,9 @@ export type UserCreateWithoutRecurringBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -681,6 +774,9 @@ export type UserUncheckedCreateWithoutRecurringBookingsInput = {
   email: string
   passwordHash: string
   phone: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
   teamName?: string | null
   role?: $Enums.UserRole
   canBookDirectly?: boolean
@@ -712,6 +808,9 @@ export type UserUpdateWithoutRecurringBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -727,6 +826,9 @@ export type UserUncheckedUpdateWithoutRecurringBookingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   canBookDirectly?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -791,6 +893,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   passwordHash?: boolean
   phone?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  username?: boolean
   teamName?: boolean
   role?: boolean
   canBookDirectly?: boolean
@@ -808,6 +913,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   phone?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  username?: boolean
   teamName?: boolean
   role?: boolean
   canBookDirectly?: boolean
@@ -821,6 +929,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   passwordHash?: boolean
   phone?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  username?: boolean
   teamName?: boolean
   role?: boolean
   canBookDirectly?: boolean
@@ -834,6 +945,9 @@ export type UserSelectScalar = {
   email?: boolean
   passwordHash?: boolean
   phone?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  username?: boolean
   teamName?: boolean
   role?: boolean
   canBookDirectly?: boolean
@@ -842,7 +956,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "phone" | "teamName" | "role" | "canBookDirectly" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "phone" | "firstName" | "lastName" | "username" | "teamName" | "role" | "canBookDirectly" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.User$bookingsArgs<ExtArgs>
   recurringBookings?: boolean | Prisma.User$recurringBookingsArgs<ExtArgs>
@@ -864,6 +978,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     passwordHash: string
     phone: string
+    firstName: string | null
+    lastName: string | null
+    username: string | null
     teamName: string | null
     role: $Enums.UserRole
     canBookDirectly: boolean
@@ -1300,6 +1417,9 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
+  readonly firstName: Prisma.FieldRef<"User", 'String'>
+  readonly lastName: Prisma.FieldRef<"User", 'String'>
+  readonly username: Prisma.FieldRef<"User", 'String'>
   readonly teamName: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly canBookDirectly: Prisma.FieldRef<"User", 'Boolean'>

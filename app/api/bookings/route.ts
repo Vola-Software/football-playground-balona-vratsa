@@ -51,10 +51,32 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const { targetUserId, guestName, guestPhone, ...bookingFields } = parsed.data;
+
+    // Admin can book on behalf of a registered user or as a guest
+    let resolvedUserId: string | undefined = user.id;
+    let resolvedGuestName: string | undefined;
+    let resolvedGuestPhone: string | undefined;
+    let resolvedCanBookDirectly = user.canBookDirectly;
+
+    if (user.role === "ADMIN") {
+      if (guestName && guestPhone) {
+        resolvedUserId = undefined;
+        resolvedGuestName = guestName;
+        resolvedGuestPhone = guestPhone;
+      } else if (targetUserId) {
+        resolvedUserId = targetUserId;
+        // Fetch that user's canBookDirectly (admin booking overrides anyway)
+        resolvedCanBookDirectly = true;
+      }
+    }
+
     const result = await createBooking({
-      ...parsed.data,
-      userId: user.id,
-      canBookDirectly: user.canBookDirectly,
+      ...bookingFields,
+      userId: resolvedUserId,
+      guestName: resolvedGuestName,
+      guestPhone: resolvedGuestPhone,
+      canBookDirectly: resolvedCanBookDirectly,
       isAdmin: user.role === "ADMIN",
     });
     return NextResponse.json(

@@ -15,7 +15,11 @@ export interface CreateBookingInput {
   fieldId: string;
   date: string; // YYYY-MM-DD in Sofia time
   hour: number; // 0-23 in Sofia time
-  userId: string;
+  /** Registered user — required unless it's a guest booking */
+  userId?: string;
+  /** Guest booking (admin only) */
+  guestName?: string | null;
+  guestPhone?: string | null;
   canBookDirectly: boolean;
   isAdmin?: boolean;
   teamAName?: string | null;
@@ -25,8 +29,8 @@ export interface CreateBookingInput {
 
 export async function createBooking(input: CreateBookingInput) {
   const {
-    fieldId, date, hour, userId, canBookDirectly, isAdmin,
-    teamAName, teamBName, notes,
+    fieldId, date, hour, userId, guestName, guestPhone,
+    canBookDirectly, isAdmin, teamAName, teamBName, notes,
   } = input;
 
   // Validate field
@@ -73,7 +77,9 @@ export async function createBooking(input: CreateBookingInput) {
       endTime,
       status,
       source,
-      userId,
+      userId: userId ?? null,
+      guestName: guestName ?? null,
+      guestPhone: guestPhone ?? null,
       teamAName: teamAName ?? null,
       teamBName: teamBName ?? null,
       notes: notes ?? null,
