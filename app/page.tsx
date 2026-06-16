@@ -1,4 +1,4 @@
-import CalendarView from "@/components/calendar-view";
+import CalendarWithBooking from "@/components/calendar-with-booking";
 
 export const metadata = {
   title: "Балона Враца — Резервации на игрища",
@@ -15,7 +15,7 @@ export default function HomePage() {
           Изберете дата и резервирайте вашия час
         </p>
       </div>
-      <CalendarView />
+      <CalendarWithBooking />
     </div>
   );
 }

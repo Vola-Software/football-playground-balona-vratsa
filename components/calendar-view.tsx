@@ -134,11 +134,13 @@ function CalendarSkeleton() {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 interface CalendarViewProps {
-  /** Called when a free slot is clicked (wired up in Step 4) */
-  onBookSlot?: (fieldId: string, hour: number, date: string) => void;
+  /** Called when a free slot is clicked */
+  onBookSlot?: (fieldId: string, fieldName: string, hour: number, date: string) => void;
+  /** Increment to force a calendar refresh after a booking */
+  refreshKey?: number;
 }
 
-export default function CalendarView({ onBookSlot }: CalendarViewProps) {
+export default function CalendarView({ onBookSlot, refreshKey = 0 }: CalendarViewProps) {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
 
@@ -167,7 +169,7 @@ export default function CalendarView({ onBookSlot }: CalendarViewProps) {
 
   useEffect(() => {
     fetchAvailability(selectedDate);
-  }, [selectedDate, fetchAvailability]);
+  }, [selectedDate, fetchAvailability, refreshKey]);
 
   function navigate(days: number) {
     const next = addDay(selectedDate, days);
@@ -303,7 +305,7 @@ export default function CalendarView({ onBookSlot }: CalendarViewProps) {
                     isPast={data.isPast}
                     isBeyondHorizon={data.isBeyondHorizon}
                     isLoggedIn={isLoggedIn}
-                    onBook={(h) => onBookSlot?.(field.id, h, selectedDate)}
+                    onBook={(h) => onBookSlot?.(field.id, field.name, h, selectedDate)}
                   />
                 ))}
               </>
