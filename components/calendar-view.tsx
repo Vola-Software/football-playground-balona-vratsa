@@ -101,7 +101,11 @@ function SlotCell({ slot, isPast, isBeyondHorizon, isLoggedIn, onBook }: SlotCel
   let label = "";
   let cursor = "cursor-default";
 
-  if (slot.status === "CONFIRMED") {
+  if (slot.status === "RECURRING") {
+    bg = "bg-red-300 border-red-400";
+    text = "text-red-900";
+    label = "Рег.";
+  } else if (slot.status === "CONFIRMED") {
     bg = "bg-red-100 border-red-200";
     text = "text-red-700";
     label = "Заето";
@@ -479,6 +483,10 @@ export default function CalendarView({ onBookSlot, refreshKey = 0 }: CalendarVie
             <span className="flex items-center gap-1">
               <span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-200" />
               Заето
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-3 h-3 rounded bg-red-300 border border-red-400" />
+              Регулярно заето
             </span>
           </div>
         </div>

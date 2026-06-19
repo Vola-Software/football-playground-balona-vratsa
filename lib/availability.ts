@@ -4,7 +4,7 @@ import { prisma } from "./prisma";
 
 const TZ = "Europe/Sofia";
 
-export type SlotStatus = "FREE" | "PENDING" | "CONFIRMED";
+export type SlotStatus = "FREE" | "PENDING" | "CONFIRMED" | "RECURRING";
 
 export interface SlotInfo {
   hour: number;
@@ -76,7 +76,7 @@ export async function getSlotGrid(dateStr: string): Promise<AvailabilityData> {
       startTime: { gte: dayStartUtc, lte: dayEndUtc },
       status: { in: ["PENDING", "CONFIRMED"] },
     },
-    select: { id: true, fieldId: true, startTime: true, status: true },
+    select: { id: true, fieldId: true, startTime: true, status: true, recurringBookingId: true },
   });
 
   // Build fieldId → hour → booking lookup
@@ -89,7 +89,9 @@ export async function getSlotGrid(dateStr: string): Promise<AvailabilityData> {
     if (!bookingMap.has(b.fieldId)) bookingMap.set(b.fieldId, new Map());
     bookingMap.get(b.fieldId)!.set(hour, {
       id: b.id,
-      status: b.status as SlotStatus,
+      status: b.recurringBookingId
+        ? ("RECURRING" as SlotStatus)
+        : (b.status as SlotStatus),
     });
   }
 
